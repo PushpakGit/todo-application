@@ -2,10 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'antd';
 import { markTodoDone, getTodos, deleteTodo, deleteSelected } from '../Actions/index';
 import { connect } from 'react-redux';
+import {  PieChart, Pie, ResponsiveContainer , Tooltip, BarChart, CartesianGrid, Legend, XAxis, YAxis, Bar } from 'recharts';
 
 let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading, deleteSelected}) =>{
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-        
+    
+    const chartData = function(){
+      let done=0;
+      let todo=0;
+      if(todos){
+      todos.map(rec=>{
+        if(rec.status == "DONE") done++;
+        else if(rec.status == "TODO") todo++;
+      })
+      return [
+        {
+          name:'Done',
+          value:done
+        },
+        {
+          name:'Todo',
+          value:todo
+        }
+      ]
+    }else return null
+    }
+
+    console.log("chartData",chartData())
     const columns = [
         {
         title: 'Title',
@@ -69,6 +92,26 @@ let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading, deleteSelec
             {/* {
               todos.map((todo,index) => <TodoListItem key={index} title={todo.title} description={todo.description} status={todo.status} />)  
             } */}
+            <ResponsiveContainer width={500} height={300}>
+              <PieChart width={500} height={300}>
+                <Pie data={chartData()} dataKey="value" cx={200} cy={200} outerRadius={60} fill="#8884d8" />
+                {/* <Pie data={data02} dataKey="value" cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d" label /> */}
+                  <Tooltip />
+                  {/* <Legend /> */}
+              </PieChart>
+            </ResponsiveContainer>
+
+            <ResponsiveContainer width={400} height={300}>
+              <BarChart width={400} height={250} data={chartData()}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                {/* <Bar dataKey="value" fill="#8884d8" /> */}
+                <Bar dataKey="value" barSize={50} fill="#82ca9d" />
+            </BarChart>
+          </ResponsiveContainer>
             <span style={{ marginLeft: 8 }}>
                 { hasSelected ? 
                     <div style={{marginBottom:10}}>
@@ -84,6 +127,7 @@ let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading, deleteSelec
                     rowSelection={rowSelection}
                     pagination={pagination}
                      />
+          
         </div>
     )
 }

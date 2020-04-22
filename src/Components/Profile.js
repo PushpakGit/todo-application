@@ -8,6 +8,7 @@ const Profile = (props) =>{
               <Breadcrumb.Item>Todo</Breadcrumb.Item>
               <Breadcrumb.Item>Profile</Breadcrumb.Item>
             </Breadcrumb>
+            <h3>No data</h3>
         </div>
     )
 }

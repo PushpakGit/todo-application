@@ -1,4 +1,5 @@
-import {GET_TODOS, TODOS_RECEIVED, CREATE_TODO, TODO_CREATED, DELETE_TODO, TODO_DELETED, MARK_DONE, DONE_MARKED} from '../Actions/types';
+import {GET_TODOS, TODOS_RECEIVED, CREATE_TODO, TODO_CREATED, DELETE_TODO, TODO_DELETED, MARK_DONE, DONE_MARKED,SELECTED_DELTED, DELETED_SELECTED} from '../Actions/types';
+import { act } from 'react-dom/test-utils';
 // export default (state = {}, action) => {
 //   switch(action.type) {
 //     case FETCH_TODOS:
@@ -28,6 +29,15 @@ const reducer = (state = {}, action) => {
         return{...state, loading:true}
     case DONE_MARKED:
         return{...state, loading:false}
+    case DELETED_SELECTED:
+        return{...state, loading:false}
+    case SELECTED_DELTED:
+        console.log("DATA",action.key)
+        let todoData = state.todos;
+        action.key.map(key=>{
+            todoData = todoData.filter(rec => rec.key != key); 
+        })
+        return{...state,todos:todoData, loading:false}
     default: 
         return state;
   }

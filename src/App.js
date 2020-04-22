@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import './App.css';
 import 'antd/dist/antd.css';
 import logo from './logo.svg'
@@ -7,8 +7,6 @@ import { Layout, Menu } from 'antd';
 import {
   DesktopOutlined,
   PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
@@ -20,11 +18,12 @@ import {
 } from "react-router-dom";
 
 import Dashboard from './Components/Dashboard';
-import CreateTodo from './Components/Create';
-import Profile from './Components/Profile';
+const CreateTodo = lazy(() => import('./Components/Create'));
+const Profile = lazy(() => import('./Components/Profile'));
+
+const renderLoader = () => <p>Loading</p>;
 
 const { Header, Content, Footer, Sider } = Layout;
-
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -52,6 +51,7 @@ class App extends React.Component {
 
   render() {
     return (
+    <Suspense fallback={renderLoader()}>
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
           <div className="logo"><img src={logo} /></div>
@@ -82,6 +82,7 @@ class App extends React.Component {
           <Footer style={{ textAlign: 'center' }}>Ant Design ©2018</Footer>
         </Layout>
       </Layout>
+      </Suspense>
     );
   }
 }

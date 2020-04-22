@@ -6,3 +6,5 @@ export const DELETE_TODO = "DELETE_TODO";
 export const TODO_DELETED = "TODO_DELETED";
 export const MARK_DONE = "MARK_DONE";
 export const DONE_MARKED = "DONE_MARKED";
+export const DELETED_SELECTED = "DELETED_SELECTED";
+export const SELECTED_DELTED = "SELECTED_DELTED";

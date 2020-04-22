@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'antd';
-import { markTodoDone, getTodos, deleteTodo } from '../Actions/index';
+import { markTodoDone, getTodos, deleteTodo, deleteSelected } from '../Actions/index';
 import { connect } from 'react-redux';
 
-let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading}) =>{
+let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading, deleteSelected}) =>{
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
         
     const columns = [
@@ -55,6 +55,13 @@ let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading}) =>{
 
     let markAsDelete = function(rec){
         deleteTodo(rec.key);
+        let selectedKeys = selectedRowKeys.filter(k => k != rec.key);
+        setSelectedRowKeys(selectedKeys)
+    }
+
+    const deleteSelectedTodos = function(){
+      deleteSelected(selectedRowKeys);
+      setSelectedRowKeys([])
     }
 
     return(
@@ -63,7 +70,12 @@ let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading}) =>{
               todos.map((todo,index) => <TodoListItem key={index} title={todo.title} description={todo.description} status={todo.status} />)  
             } */}
             <span style={{ marginLeft: 8 }}>
-                { hasSelected ? `Selected ${selectedRowKeys.length} items` : '' }
+                { hasSelected ? 
+                    <div style={{marginBottom:10}}>
+                      <Button type="primary" danger onClick={deleteSelectedTodos} >Delete</Button>
+                        { ` Selected ${selectedRowKeys.length} items`}
+                      </div> 
+                    : '' }
             </span>
             <Table columns={columns} 
                     bordered={true} 
@@ -85,7 +97,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   getTodos,
   deleteTodo,
-  markTodoDone
+  markTodoDone,
+  deleteSelected
 };
 
 TodoList = connect(mapStateToProps,mapDispatchToProps)(TodoList)

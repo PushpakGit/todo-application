@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'antd';
-import { getTodos } from '../Actions/index';
+import { markTodoDone, getTodos, deleteTodo } from '../Actions/index';
 import { connect } from 'react-redux';
 
-let TodoList = ({getTodos, todos, loading}) =>{
+let TodoList = ({getTodos, deleteTodo, markTodoDone, todos, loading}) =>{
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
         
     const columns = [
@@ -28,7 +28,7 @@ let TodoList = ({getTodos, todos, loading}) =>{
             render: (text, record) => (
               <span>
                 {
-                record.status === "TODO" ? <a style={{ marginRight: 16 }} onClick={()=>markAsDone(record)}>Mark Done</a> : ''
+                record.status === "TODO" ? <a style={{ marginRight: 16 }} onClick={()=>markTodoDone(record)}>Mark Done</a> : ''
                 }
                 <a onClick={()=>markAsDelete(record)}>Delete</a>
               </span>
@@ -52,13 +52,9 @@ let TodoList = ({getTodos, todos, loading}) =>{
     useEffect(()=>{
       getTodos()        
     },[])
-    
-   let markAsDone = function(rec){
-        console.log("record",rec)
-    }
 
     let markAsDelete = function(rec){
-        console.log("delete",rec);
+        deleteTodo(rec.key);
     }
 
     return(
@@ -87,7 +83,9 @@ const mapStateToProps = (state) => {
 }}
 
 const mapDispatchToProps = {
-  getTodos: getTodos,
+  getTodos,
+  deleteTodo,
+  markTodoDone
 };
 
 TodoList = connect(mapStateToProps,mapDispatchToProps)(TodoList)

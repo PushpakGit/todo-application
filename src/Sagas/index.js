@@ -14,7 +14,6 @@ function* fetchTodos() {
 }
 
 function* createTodos(data){
-  console.log("DATA",data);
   const json = yield axios.post(`https://todo-application-95e80.firebaseio.com/todos.json`,data.data)
                     .then(todos =>{
                       console.log(todos.data)
@@ -22,6 +21,32 @@ function* createTodos(data){
                     })
           
   yield put({ type: "TODO_CREATED", newTodo:json })
+}
+
+function* markTodoDone(action){
+  let key = action.data.key;
+  let data = action.data
+  data["status"] = "DONE";
+  delete data.key;
+
+  yield axios.put(`https://todo-application-95e80.firebaseio.com/todos/${key}.json`,data)
+                    .then(todos =>{
+                      console.log(todos.data)
+                      // return todos.data
+                    })
+          
+  yield put({ type: "DONE_MARKED"});
+  yield put({ type: "GET_TODOS"});
+}
+
+function* deleteTodos(action){
+  yield axios.delete(`https://todo-application-95e80.firebaseio.com/todos/${action.key}.json`)
+                    .then(todos =>{
+                      console.log(todos.data)
+                      // return todos.data
+                    })
+          
+  yield put({ type: "TODO_DELETED", key:action.key })
 }
 
 function* actionWatcher() {
@@ -32,9 +57,19 @@ function* createWatcher(){
   yield takeLatest('CREATE_TODO', createTodos);
 }
 
+function* deleteWatcher(){  
+  yield takeLatest('DELETE_TODO', deleteTodos);
+}
+
+function* markDoneWatcher(){
+  yield takeLatest('MARK_DONE', markTodoDone);
+}
+
 export default function* rootSaga() {
    yield all([
    actionWatcher(),
-   createWatcher()
+   createWatcher(),
+   deleteWatcher(),
+   markDoneWatcher()
    ]);
 }

@@ -13,10 +13,10 @@ import {
 } from '@ant-design/icons';
 
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  withRouter
 } from "react-router-dom";
 
 import Dashboard from './Components/Dashboard';
@@ -26,9 +26,24 @@ import Profile from './Components/Profile';
 const { Header, Content, Footer, Sider } = Layout;
 
 class App extends React.Component {
-  state = {
-    collapsed: false,
-  };
+  constructor(props){
+    super(props);
+    let selectedKey='1';
+    if(this.props.location.pathname == "/"){
+      selectedKey='1'
+    }else if(this.props.location.pathname == "/create"){
+      selectedKey='2'
+    }else if(this.props.location.pathname == "/profile"){
+      selectedKey='3'
+    }
+
+    this.state = {
+      collapsed: false,
+      selectedKey:selectedKey
+    };
+
+  }
+  
 
   onCollapse = collapsed => {
     console.log(collapsed);
@@ -37,11 +52,10 @@ class App extends React.Component {
 
   render() {
     return (
-      <Router>
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
           <div className="logo"><img src={logo} /></div>
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+          <Menu theme="dark" defaultSelectedKeys={[this.state.selectedKey]} mode="inline">
             <Menu.Item key="1">
               <PieChartOutlined />
               <Link to={`/`}><span>Dashboard</span></Link>
@@ -68,9 +82,8 @@ class App extends React.Component {
           <Footer style={{ textAlign: 'center' }}>Ant Design ©2018</Footer>
         </Layout>
       </Layout>
-      </Router>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
